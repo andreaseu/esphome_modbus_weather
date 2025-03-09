@@ -118,6 +118,8 @@ Die Wetterstation wird automatisch in Home Assistant über MQTT Discovery integr
 
 Für dieses Projekt werden passende 3D-Druckdateien für ein Gehäuse zur Verfügung gestellt. Diese ermöglichen eine wetterfeste und ästhetische Montage der Elektronikkomponenten.
 
+![Home Assistant Dashboard](images/rendering.png)
+
 ## Anpassung
 
 Du kannst die Konfiguration an deine Bedürfnisse anpassen:
