@@ -2,6 +2,8 @@
 
 Dieses Projekt implementiert eine Wetterstation mit ESPHome, die über Modbus mit einem Wettersensor von Elsner Elektronik (P03/3) GPS kommuniziert und die Daten in Home Assistant integriert.
 
+![Home Assistant Dashboard](images/dashboard.png)
+
 ## Überblick
 
 Die Wetterstation erfasst folgende Wetterdaten:
