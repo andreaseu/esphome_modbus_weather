@@ -1,4 +1,5 @@
-# ESPHome - Elsner Elektronik Wetterstation (P03/3) Modbus Converter Projekt
+# ESPHome Modbus Converter Projekt
+# Elsner Elektronik Wetterstation (P03/3) Integration in Homeassistant
 
 Dieses Projekt implementiert eine Wetterstation mit ESPHome, die über Modbus mit einem Wettersensor von Elsner Elektronik (P03/3) GPS kommuniziert und die Daten in Home Assistant integriert.
 
