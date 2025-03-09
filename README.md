@@ -94,7 +94,7 @@ Weitere Informationen: [Elsner Elektronik P03/3](https://www.elsner-elektronik.d
 ## Installation
 
 1. Installiere ESPHome auf deinem System
-2. Kopiere die YAML-Konfiguration in eine neue Datei
+2. Kopiere die ![YAML-Konfiguration](weatherstation.yaml) in eine neue Datei
 3. Erstelle eine `secrets.yaml` Datei mit den WLAN- und MQTT-Zugangsdaten
 4. Kompiliere und flashe die Firmware auf deinen ESP
 
