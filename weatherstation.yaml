@@ -348,7 +348,7 @@ sensor:
     id: gps_status_raw
     register_type: read
     address: 6
-    bitmask: 0x0001
+    bitmask: 0x0100
     value_type: U_WORD
     internal: true
     entity_category: diagnostic
