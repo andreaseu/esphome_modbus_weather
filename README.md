@@ -1,6 +1,6 @@
 ### English Version
 
-# ESPHome Modbus Converter Project - Elsner Elektronik Weather Station (P03/3) Integration with Home Assistant
+# ESPHome Modbus Converter Project - Elsner Elektronik Weather Station (P03/3) Integration with MQTT to Home Assistant
 
 This project implements a weather station using ESPHome, which communicates with an Elsner Elektronik weather sensor (P03/3) via Modbus and integrates the data into Home Assistant.
 
@@ -120,10 +120,11 @@ The weather station communicates with the sensor via Modbus with the following p
 
 The weather station is automatically integrated into Home Assistant via MQTT Discovery. All sensors are configured with appropriate device classes and measurement units.
 
-## 3D Printed Enclosure
+## 3D Printed Case
 
 This project provides suitable 3D print files for an enclosure that allows weather-resistant and aesthetically pleasing mounting of the electronic components.
 
+[3DPrinting Case](3dprints/ESPHome_Modbus_Converter_Case.3mf)
 ![3D Rendering](images/rendering.png)
 ![Case](images/case_weatherstation_1.jpeg)
 ![Case](images/case_weatherstation_2.jpeg)
@@ -131,7 +132,7 @@ This project provides suitable 3D print files for an enclosure that allows weath
 ## 3D Printed Mounting on a Window Sill
 
 This project provides suitable 3D print files for an enclosure that allows weather-resistant and aesthetically pleasing mounting without drilling into the exterior facade.
-
+[3DPrinting Mounting](3dprints/ESPHome_Modbus_Converter_Case.3mf)
 ![Mounting Plate](images/mounting_weatherstation_1.jpeg)
 ![Mounting](images/mounting_weatherstation_2.jpeg)
 ![Mounting](images/mounting_weatherstation_3.jpeg)
@@ -159,7 +160,7 @@ For communication issues with the Modbus sensor:
 
 # ESPHome Modbus-Konverter-Projekt - Elsner Elektronik Wetterstation (P03/3) Integration in Home Assistant
 
-Dieses Projekt implementiert eine Wetterstation mit ESPHome, die über Modbus mit einem Wettersensor von Elsner Elektronik (P03/3) kommuniziert und die Daten in Home Assistant integriert.
+Dieses Projekt implementiert eine Wetterstation mit ESPHome, die über Modbus mit einem Wettersensor von Elsner Elektronik (P03/3) kommuniziert und die Daten via MQTT in Home Assistant integriert.
 
 ![Home Assistant Dashboard](images/dashboard.png)
 
@@ -281,6 +282,7 @@ Die Wetterstation wird automatisch in Home Assistant über MQTT Discovery integr
 
 Für dieses Projekt werden passende 3D-Druckdateien für ein Gehäuse zur Verfügung gestellt. Diese ermöglichen eine wetterfeste und ästhetische Montage der Elektronikkomponenten.
 
+[3DPrinting Case](3dprints/ESPHome_Modbus_Converter_Case.3mf)
 ![3D Rendering](images/rendering.png)
 ![Case](images/case_weatherstation_1.jpeg)
 ![Case](images/case_weatherstation_2.jpeg)
@@ -289,6 +291,7 @@ Für dieses Projekt werden passende 3D-Druckdateien für ein Gehäuse zur Verfü
 
 Für dieses Projekt werden passende 3D-Druckdateien für ein Gehäuse zur Verfügung gestellt. Diese ermöglichen eine wetterfeste und ästhetische Montage ohne zu bohren an der Außenfassade.
 
+[3DPrinting Mounting](3dprints/ESPHome_Modbus_Converter_Case.3mf)
 ![Mounting Plate](images/mounting_weatherstation_1.jpeg)
 ![Mounting](images/mounting_weatherstation_2.jpeg)
 ![Mounting](images/mounting_weatherstation_3.jpeg)
