@@ -1,0 +1,450 @@
+esphome:
+  name: weatherstation
+  friendly_name: My weatherstation
+
+esp8266:
+  board: esp01_1m
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  fast_connect: true
+  ap:
+    ssid: "Wetterstation Fallback Hotspot"
+    password: "MyPasswordWifi"
+
+mqtt:
+  broker: !secret mqtt_broker
+  username: !secret mqtt_username
+  password: !secret mqtt_password
+  port: !secret mqtt_port
+  discovery: true
+  
+logger:
+  level: INFO #VERY_VERBOSE
+  baud_rate: 0
+  logs:
+    modbus.controller: INFO #VERY_VERBOSE
+    modbus.transport: INFO #VERY_VERBOSE
+
+ota:
+  - platform: esphome
+    password: "changeOTApassword"
+
+uart:
+  id: modbus_uart
+  tx_pin: GPIO1
+  rx_pin: GPIO3
+  baud_rate: 19200
+  stop_bits: 1
+  data_bits: 8
+  parity: EVEN
+  rx_buffer_size: 512
+  debug:
+    direction: BOTH
+    dummy_receiver: false
+
+modbus:
+  id: modbus1
+  uart_id: modbus_uart
+  flow_control_pin: GPIO2
+  send_wait_time: 250ms
+
+modbus_controller:
+  - id: p033_modbus_controller
+    modbus_id: modbus1
+    address: 0x01
+    command_throttle: 1000ms
+    setup_priority: -10
+    update_interval: 30s
+
+sensor:
+  # Temperatur (Register 0, 16-bit signed)
+  - platform: modbus_controller
+    modbus_controller_id: p033_modbus_controller
+    name: "Temperatur"
+    id: temperatur
+    device_class: temperature
+    state_class: measurement
+    register_type: read
+    address: 0
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+    
+  # Helligkeit Süd (Register 1, liefert kLux => in "lx" umrechnen)
+  - platform: modbus_controller
+    modbus_controller_id: p033_modbus_controller
+    name: "Helligkeit Süd"
+    id: helligkeit_sued
+    device_class: illuminance
+    state_class: measurement
+    register_type: read
+    address: 1
+    value_type: U_WORD
+    unit_of_measurement: "lx"
+    accuracy_decimals: 0
+    filters:
+      - multiply: 1000
+
+  # Helligkeit West (Register 2, liefert kLux => in "lx" umrechnen)
+  - platform: modbus_controller
+    modbus_controller_id: p033_modbus_controller
+    name: "Helligkeit West"
+    id: helligkeit_west
+    device_class: illuminance
+    state_class: measurement
+    register_type: read
+    address: 2
+    value_type: U_WORD
+    unit_of_measurement: "lx"
+    accuracy_decimals: 0
+    filters:
+      - multiply: 1000
+
+  # Helligkeit Ost (Register 3, liefert kLux => in "lx" umrechnen)
+  - platform: modbus_controller
+    modbus_controller_id: p033_modbus_controller
+    name: "Helligkeit Ost"
+    id: helligkeit_ost
+    device_class: illuminance
+    state_class: measurement
+    register_type: read
+    address: 3
+    value_type: U_WORD
+    unit_of_measurement: "lx"
+    accuracy_decimals: 0
+    filters:
+      - multiply: 1000
+
+  # Licht (Register 4, liefert bereits Lux => keine Multiplikation)
+  - platform: modbus_controller
+    modbus_controller_id: p033_modbus_controller
+    name: "Licht"
+    id: licht
+    device_class: illuminance
+    state_class: measurement
+    register_type: read
+    address: 4
+    value_type: U_WORD
+    unit_of_measurement: "lx"
+    accuracy_decimals: 0
+    
+  # Windgeschwindigkeit (Register 5, 16-bit unsigned)
+  - platform: modbus_controller
+    modbus_controller_id: p033_modbus_controller
+    name: "Windgeschwindigkeit"
+    id: windgeschwindigkeit
+    device_class: wind_speed
+    state_class: measurement
+    register_type: read
+    address: 5
+    value_type: U_WORD
+    unit_of_measurement: "m/s"
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+      
+  # Tag (Register 7)
+  - platform: modbus_controller
+    modbus_controller_id: p033_modbus_controller
+    id: day_sensor
+    name: "Tag"
+    register_type: read
+    address: 7
+    value_type: U_WORD
+    entity_category: diagnostic
+    
+  # Monat (Register 8)
+  - platform: modbus_controller
+    modbus_controller_id: p033_modbus_controller
+    id: month_sensor
+    name: "Monat"
+    register_type: read
+    address: 8
+    value_type: U_WORD
+    entity_category: diagnostic
+    
+  # Jahr (Register 9)
+  - platform: modbus_controller
+    modbus_controller_id: p033_modbus_controller
+    id: year_sensor
+    name: "Jahr"
+    register_type: read
+    address: 9
+    value_type: U_WORD
+    entity_category: diagnostic
+    
+  # Stunde (Register 10)
+  - platform: modbus_controller
+    modbus_controller_id: p033_modbus_controller
+    id: hour_sensor
+    name: "Stunde"
+    register_type: read
+    address: 10
+    value_type: U_WORD
+    entity_category: diagnostic
+    
+  # Minute (Register 11)
+  - platform: modbus_controller
+    modbus_controller_id: p033_modbus_controller
+    id: minute_sensor
+    name: "Minute"
+    register_type: read
+    address: 11
+    value_type: U_WORD
+    entity_category: diagnostic
+    
+  # Sekunde (Register 12)
+  - platform: modbus_controller
+    modbus_controller_id: p033_modbus_controller
+    id: second_sensor
+    name: "Sekunde"
+    register_type: read
+    address: 12
+    value_type: U_WORD
+    entity_category: diagnostic
+      
+  # Azimut (Register 13, 16-bit signed)
+  - platform: modbus_controller
+    modbus_controller_id: p033_modbus_controller
+    name: "Sonnenazimut"
+    id: sonnenazimut
+    state_class: measurement
+    register_type: read
+    address: 13
+    value_type: S_WORD
+    unit_of_measurement: "°"
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+      
+  # Elevation (Register 14, 16-bit signed)
+  - platform: modbus_controller
+    modbus_controller_id: p033_modbus_controller
+    name: "Sonnenelevation"
+    id: sonnenelevation
+    state_class: measurement
+    register_type: read
+    address: 14
+    value_type: S_WORD
+    unit_of_measurement: "°"
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+      
+  # Längengrad (Register 15, 16-bit signed)
+  - platform: modbus_controller
+    modbus_controller_id: p033_modbus_controller
+    name: "Längengrad"
+    id: laengengrad
+    state_class: measurement
+    register_type: read
+    address: 15
+    value_type: S_WORD
+    unit_of_measurement: "°"
+    accuracy_decimals: 2
+    entity_category: diagnostic
+    filters:
+      - multiply: 0.01
+      
+  # Breitengrad (Register 16, 16-bit signed)
+  - platform: modbus_controller
+    modbus_controller_id: p033_modbus_controller
+    name: "Breitengrad"
+    id: breitengrad
+    state_class: measurement
+    register_type: read
+    address: 16
+    value_type: S_WORD
+    unit_of_measurement: "°"
+    accuracy_decimals: 2
+    entity_category: diagnostic
+    filters:
+      - multiply: 0.01
+
+  # Maximale Helligkeit (höchster Wert aus Süd, West, Ost)
+  - platform: template
+    name: "Maximale Helligkeit"
+    id: max_helligkeit
+    device_class: illuminance
+    state_class: measurement
+    unit_of_measurement: "klx"
+    lambda: |-
+      if (id(helligkeit_sued).has_state() && id(helligkeit_west).has_state() && id(helligkeit_ost).has_state()) {
+        float south = id(helligkeit_sued).state;
+        float west = id(helligkeit_west).state;
+        float east = id(helligkeit_ost).state;
+        return std::max(std::max(south, west), east);
+      } else {
+        return 0;
+      }
+    update_interval: 30s
+
+  # Windstärke nach Beaufort
+  - platform: template
+    name: "Windstärke"
+    id: windstaerke
+    unit_of_measurement: "Bft"
+    icon: mdi:weather-windy
+    lambda: |-
+      if (!id(windgeschwindigkeit).has_state()) return 0;
+      float wind = id(windgeschwindigkeit).state;
+      if (wind < 0.3) return 0;      // Windstille
+      if (wind < 1.6) return 1;      // Leiser Zug
+      if (wind < 3.4) return 2;      // Leichte Brise
+      if (wind < 5.5) return 3;      // Schwache Brise
+      if (wind < 8.0) return 4;      // Mäßige Brise
+      if (wind < 10.8) return 5;     // Frische Brise
+      if (wind < 13.9) return 6;     // Starker Wind
+      if (wind < 17.2) return 7;     // Steifer Wind
+      if (wind < 20.8) return 8;     // Stürmischer Wind
+      if (wind < 24.5) return 9;     // Sturm
+      if (wind < 28.5) return 10;    // Schwerer Sturm
+      if (wind < 32.7) return 11;    // Orkanartiger Sturm
+      return 12;                     // Orkan
+    update_interval: 30s
+
+  # Diagnose-Sensoren
+  - platform: wifi_signal
+    name: "WLAN Signalstärke"
+    id: wifi_signal_strength
+    update_interval: 60s
+    entity_category: diagnostic
+  
+  - platform: copy
+    source_id: wifi_signal_strength
+    name: "WLAN Signalqualität"
+    filters:
+      - lambda: return min(max(2 * (x + 100.0), 0.0), 100.0);
+    unit_of_measurement: "%"
+    entity_category: diagnostic
+    device_class: ""
+  
+  - platform: template
+    name: "WLAN Kanal"
+    id: wifi_channel
+    lambda: return WiFi.channel();
+    update_interval: 60s
+    entity_category: diagnostic
+    accuracy_decimals: 0
+  
+  - platform: uptime
+    name: "Uptime"
+    unit_of_measurement: s
+    icon: mdi:timer-outline
+    accuracy_decimals: 0
+    device_class: duration
+    state_class: total_increasing
+    entity_category: diagnostic
+    update_interval: 60s
+
+  # GPS Status (Register 6, Bit 0)
+  - platform: modbus_controller
+    modbus_controller_id: p033_modbus_controller
+    name: "GPS Status Raw"
+    id: gps_status_raw
+    register_type: read
+    address: 6
+    bitmask: 0x0100
+    value_type: U_WORD
+    internal: true
+    entity_category: diagnostic
+
+text_sensor:
+  - platform: template
+    name: "GPS / RTC"
+    lambda: |-
+      if (id(gps_status_raw).state > 0) {
+        return {"GPS"};
+      } else {
+        return {"Quartz Clock"};
+      }
+    entity_category: "diagnostic"
+    update_interval: 30s
+
+  # Datum zusammengesetzt aus Tag, Monat, Jahr
+  - platform: template
+    name: "Datum"
+    lambda: |-
+      if (id(day_sensor).has_state() && id(month_sensor).has_state() && id(year_sensor).has_state()) {
+        char buffer[11];
+        sprintf(buffer, "%04d-%02d-%02d", (int)id(year_sensor).state, (int)id(month_sensor).state, (int)id(day_sensor).state);
+        return {buffer};
+      }
+      return {"Keine Daten"};
+    entity_category: diagnostic
+
+      
+  # Zeit zusammengesetzt aus Stunde, Minute, Sekunde
+  - platform: template
+    name: "UTC Zeit"
+    lambda: |-
+      if (id(hour_sensor).has_state() && id(minute_sensor).has_state() && id(second_sensor).has_state()) {
+        char buffer[9];
+        sprintf(buffer, "%02d:%02d:%02d", (int)id(hour_sensor).state, (int)id(minute_sensor).state, (int)id(second_sensor).state);
+        return {buffer};
+      }
+      return {"Keine Daten"};
+    entity_category: diagnostic
+
+  # Diagnose-Sensoren
+  - platform: wifi_info
+    ip_address:
+      name: "WLAN IP"
+      entity_category: diagnostic
+    mac_address:
+      name: "WLAN Mac"
+      entity_category: diagnostic
+    ssid:
+      name: "WLAN SSID"
+      entity_category: diagnostic
+  
+  - platform: version
+    name: "Version"
+    hide_timestamp: true
+    icon: mdi:new-box
+    entity_category: diagnostic
+
+binary_sensor:
+  # Regen (Register 6, Bit 8)
+  - platform: modbus_controller
+    modbus_controller_id: p033_modbus_controller
+    name: "Regen"
+    device_class: "moisture"
+    register_type: read
+    address: 6
+    bitmask: 0x00FF
+
+  # Ist es Tag basierend auf Sonnenelevation
+  - platform: template
+    name: "Tag"
+    lambda: |-
+      if (!id(sonnenelevation).has_state()) return false;
+      return id(sonnenelevation).state > 0;
+
+  # Ist es Nach oder Nacht basierend auf Sonnenelevation
+  - platform: template
+    name: "Nacht"
+    lambda: |-
+      if (!id(sonnenelevation).has_state()) return true;
+      return id(sonnenelevation).state <= 0;
+
+
+  # Ist es windig (> 3 Bft)
+  - platform: template
+    name: "Windig"
+    lambda: |-
+      if (!id(windgeschwindigkeit).has_state()) return false;
+      return id(windgeschwindigkeit).state >= 3.4;
+    device_class: "safety"
+
+# Neustart-Button
+button:
+  - platform: restart
+    name: "ESP Neustart"
+    entity_category: diagnostic
+
+captive_portal:
