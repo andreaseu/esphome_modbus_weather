@@ -4,11 +4,19 @@ esphome:
 
 esp8266:
   board: esp01_1m
+  
+web_server:
+  port: 80
+time:
+  - platform: sntp
+    id: sntp_time
 
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
   fast_connect: true
+  min_auth_mode: WPA2
+  power_save_mode: none
   ap:
     ssid: "Wetterstation Fallback Hotspot"
     password: "MyPasswordWifi"
@@ -21,11 +29,11 @@ mqtt:
   discovery: true
   
 logger:
-  level: INFO #VERY_VERBOSE
+  level: INFO
   baud_rate: 0
   logs:
-    modbus.controller: INFO #VERY_VERBOSE
-    modbus.transport: INFO #VERY_VERBOSE
+    modbus.controller: INFO
+    modbus.transport: INFO
 
 ota:
   - platform: esphome
@@ -271,7 +279,7 @@ sensor:
     id: max_helligkeit
     device_class: illuminance
     state_class: measurement
-    unit_of_measurement: "klx"
+    unit_of_measurement: "lx" # KORRIGIERT: Sensoren liefern lx, nicht klx
     lambda: |-
       if (id(helligkeit_sued).has_state() && id(helligkeit_west).has_state() && id(helligkeit_ost).has_state()) {
         float south = id(helligkeit_sued).state;
@@ -432,7 +440,6 @@ binary_sensor:
       if (!id(sonnenelevation).has_state()) return true;
       return id(sonnenelevation).state <= 0;
 
-
   # Ist es windig (> 3 Bft)
   - platform: template
     name: "Windig"
@@ -441,10 +448,8 @@ binary_sensor:
       return id(windgeschwindigkeit).state >= 3.4;
     device_class: "safety"
 
-# Neustart-Button
 button:
   - platform: restart
     name: "ESP Neustart"
-    entity_category: diagnostic
-
+    
 captive_portal:
